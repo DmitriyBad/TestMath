@@ -77,8 +77,6 @@ class userController {
         return res.status(400).json(`Not find mail ${mail}`);
       };
 
-      //const hash = bcrypt.hashSync(password, 7);
-
       const validPassword = bcrypt.compareSync(password, user.password); 
 
       console.log(validPassword);
