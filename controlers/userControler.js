@@ -21,6 +21,7 @@ class userController {
       console.log(req.body);
       const {username, password, mail} = req.body;
 
+      //https://www.npmjs.com/package/express-validation добавити
       console.log("mail - " + mail);
       if (!username) {
         return res.status(400).json('User name empty!!!');
@@ -39,7 +40,7 @@ class userController {
         return res.status(409).json(`User with name - ${username} is in base, please enter else name!` );
       }
 
-      const mailFound = await User.findOne({mail});
+      const mailFound = await User.findOne({mail});//емейл 
       if (mailFound) {
         return res.status(409).json(`User with mail - ${mail} is in base!` );
       }
@@ -48,12 +49,12 @@ class userController {
 
       const newUser = new User({username, password: hashPassword, mail});
       newUser.save();
-      return res.status(200).json('User susses create!');
+      return res.status(201).json('User has been created succesfully!');//каряво
       
     } catch (error) {
       
       console.log(error);
-      res.status(400).json({message: error});
+      res.status(500).json({message: error});
     }
   }
 
@@ -77,21 +78,21 @@ class userController {
         return res.status(400).json(`Not find mail ${mail}`);
       };
 
-      const validPassword = bcrypt.compareSync(password, user.password); 
+      const isPasswordValid = bcrypt.compareSync(password, user.password); 
 
-      console.log(validPassword);
+      console.log(isPasswordValid);
       
-      if (!validPassword) {
+      if (!isPasswordValid) {
         return res.status(400).json('Password wrong, please enter again!');
       };
       
       const token = generateAcessToken(user._id);
-      return res.status(200).json({token});
+      return res.status(201).json({token});
      
     } catch (error) {
       
       console.log(error);
-      return res.status(400).json({message: 'Erorre - ' + error});
+      return res.status(500).json({message: 'Error - ' + error});
     }
   }
 
